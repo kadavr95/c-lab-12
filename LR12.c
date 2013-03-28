@@ -4,33 +4,47 @@
 #include <stdlib.h>//подключение стандартной библиотеки
 #include <time.h>//подключение библиотеки даты/времени
 
-#define NUMBER 21//задание максимального числа символов в числах
+int fillarray(long int *array, int *quantity);
+int printarray(long int *array, int *quantity);
+int arrayreplace(long int *array, int *quantity, int *i);
+int arrayremove(long int *array, int *quantity, int *k);
 
-int search(char *string, int *ii); //прототипы функций
-int fillarray(int *array, int *quantity);
-int printarray(int *array, int *quantity);
-int replace(int *array, int *quantity, int *i, int *k);
-int remove(int *array, int *quantity, int *i, int *k);
 
 int main(void)//главная функция
 {
 	int i,k,quantity;//определение переменных
-	long int array[100000];
-	printf("Enter i and k:");
-	scanf("%ld %ld",&i, &k);
-	fillarray();//заполнение массива случайными числами
-	printf("Array:\n");
-	printarray();
-	replace(&i,&k);
-	remove(&i,&k);
-	printf("Array after actions:\n");
-	printarray();
+	long int array[100002];
+	printf("Enter position of element to be replaced with last element of array,position of element to be deleted from array and quantity of elements in array:");//запрос на ввод
+	scanf("%ld %ld %ld",&i, &k, &quantity);//считывание значений
+	if (quantity>100000)//отбрасывание очень больших массивов
+	{
+		printf("You can't use array with more than 100000 elements");
+	}
+	else
+	{
+		if ((i>quantity)||(k>quantity))//проверка, что номера элементов не превосходят количества элементов
+		{
+			printf("Positions of elements must be less or equal to quantity");
+		}
+		else
+		{
+			fillarray(array,&quantity);//заполнение массива случайными числами
+			printf("Array:\n");//вспомогательный вывод
+			printarray(array,&quantity);//вывод массива
+			arrayreplace(array,&quantity,&i);//замена элемента
+			printf("Array after replace:\n");//вспомогательный вывод
+			printarray(array,&quantity);//вывод полученного массива
+			arrayremove(array,&quantity,&k);//удаление элемента
+			printf("Array after actions:\n");//вспомогательный вывод
+			printarray(array,&quantity);//вывод полученного массива
+		}
+	}
 	fflush(stdin);//ожидание действий пользователя
 	getchar();
 	return 0;
 }
 
-int fillarray()//заполнение массива случайными числами
+int fillarray(long int *array,int *quantity)//заполнение массива случайными числами
 {
 	int j;//определение переменных
 	int stime;
@@ -38,28 +52,37 @@ int fillarray()//заполнение массива случайными числами
 	ltime=time(NULL);//создание случайной последовательности чисел
 	stime=(unsigned) ltime/2;
 	srand(stime);
-	for (j = 1; j <= 26; j++)
+	for (j = 1; j <= *quantity; j++)
 	{
-		array[j]=-RAND_MAX+2*rand();//заполнение массива
+		array[j]=1+19*rand()/RAND_MAX;//заполнение массива
 	}
 }
 
-int printarray()//вывод строк содержащих максимальные элементы
+
+int printarray(long int *array,int *quantity)//вывод массива
 {
 	int j;//определение переменных
-	for (j = 1; j <= 26; j++)//цикл по числу столбцов
+	for (j = 1; j <= *quantity; j++)//цикл по элементам
 	{
 		printf("%8ld",array[j]);//вывод текущего элемента
 	}
-	printf("\n\n");//переход к следующей строке
+	printf("\n");//переход к следующей строке
 }
 
-int replace(int *i, int *k)
+int arrayreplace(long int *array, int *quantity, int *i)//замена элемента
 {
-	array[
+	array[0]=array[*quantity];//нехитрые манипуляции замены через третью переменную
+	array[*quantity]=array[*i];
+	array[*i]=array[0];
 }
 
-int remove(int *i, int *k)
+int arrayremove(long int *array, int *quantity, int *k)//удаление элемента
 {
-
+	int j;//определение переменных
+	*quantity=*quantity-1;//изменение количества элементов
+	for (j = *k; j <= *quantity; j++)//цикл по элементам
+	{
+		array[j]=array[j+1];//замена элемента следующим
+	}
 }
+
